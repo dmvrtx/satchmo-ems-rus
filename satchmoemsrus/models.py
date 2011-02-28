@@ -21,9 +21,17 @@ class Location(models.Model):
             ('T', _('Town'))
             )
 
-    key = models.SlugField(_('Key'))
+    key = models.SlugField(_('Key'), primary_key=True)
     kind = models.CharField(_('Type'), max_length=1, choices=LOCATION_KINDS)
     name = models.CharField(_('Name'), max_length=128)
+
+    def in_contact(self, contact):
+        u"""Проверка данных контакта на соответствие местоположению"""
+        with contact.shipping_address as address:
+            if (self.kind == 'C') \
+                    and ((address.country.iso2_code == self.key) \
+                    or is_similiar(address.country.name, self.name)):
+                        return True
 
 class Shipper(BaseShipper):
     u"""Метод отправки EMS"""
