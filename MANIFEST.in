@@ -1,1 +1,2 @@
 recursive-include satchmoemsrus/templates *.html
+recursive-include satchmoemsrus/locale *.po *.mo
