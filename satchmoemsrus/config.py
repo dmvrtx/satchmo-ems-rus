@@ -19,4 +19,17 @@ config_register_list(
         description=_("Origin city"),
         help_text=_("City of origin for parcels."),
         default=u""),
+
+    DecimalValue(SHIPPING_GROUP,
+        'HANDLING_FEE',
+        description=_("Handling Fee"),
+        help_text=_("The cost of packaging and taking order to post office"),
+        default=Decimal('0.00')),
+
+    DecimalValue(SHIPPING_GROUP,
+        'DEFAULT_FEE',
+        description=_("Default Fee"),
+        help_text=_("Used then fee calculation failed if set"),
+        default=Decimal('0.00')),
+
 )

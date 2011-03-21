@@ -99,15 +99,15 @@ class Shipper(BaseShipper):
         self.__locations_expires = None
         self.__locations = None
 
-        self._charges = 0
+        self._charges = None
         self._delivery_days = None
 
         self._city_from = ''
         # поиск города из конфигурации
-        settings = config_get_group('satchmoemsrus')
-        if settings.CITY_FROM:
+        self._settings = config_get_group('satchmoemsrus')
+        if self._settings.CITY_FROM:
             for location in self.locations:
-                if (location.kind == 'T') and (location.name == settings.CITY_FROM):
+                if (location.kind == 'T') and (location.name == self._settings.CITY_FROM):
                     self._city_from = location.key
 
         if self.cart and self.contact:
@@ -118,7 +118,7 @@ class Shipper(BaseShipper):
 
     def description(self):
         u"""Описание метода доставки"""
-        return _('Shipping by EMS Russia')
+        return _('Express shipping')
 
     def method(self):
         u"""
@@ -151,6 +151,12 @@ class Shipper(BaseShipper):
 
     def valid(self, order=None):
         u"""Проверка возможности доставки"""
+
+        if self._settings.DEFAULT_FEE:
+            # если есть такса по умолчанию - значит не надо ничего перепроверять
+            return True
+
+        products = []
         if order:
             products = order.orderitem_set.all()
             location = None
@@ -164,12 +170,16 @@ class Shipper(BaseShipper):
             else:
                 log.info('Order %s is set to location %s' % (order.pk, location))
         elif self.cart:
+            # если в корзине указан контакт клиента - проверим его доступность
+            if (self.cart.customer is not None) \
+                    and (self.get_location(self.cart.customer) is None):
+                return False
             products = self.cart.cartitem_set.all()
-            pass
 
         for cartitem in products:
-            if (not cartitem.product.is_shippable) \
-                    or (not cartitem.product.has_full_weight):
+            # проверим все ли товары имеют указанный вес и должны доставляться?
+            if not (cartitem.product.is_shippable and \
+                    cartitem.product.smart_attr('has_full_weight')):
                 return False
         return True
 
@@ -194,8 +204,15 @@ class Shipper(BaseShipper):
         return None
 
     def cost(self):
-        assert(self._calculated)
-        return Decimal(str(self._charges))
+        cost = Decimal('0.0')
+        if self._charges is not None:
+            cost = Decimal(self._charges)
+        elif self._settings.DEFAULT_FEE:
+            cost = Decimal(str(self._settings.DEFAULT_FEE))
+
+        if cost and self._settings.HANDLING_FEE:
+            cost = cost + Decimal(str(self._settings.HANDLING_FEE))
+        return cost
 
     def calculate(self, cart, contact):
         u"""
