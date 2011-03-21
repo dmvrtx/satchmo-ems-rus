@@ -152,7 +152,7 @@ class Shipper(BaseShipper):
     def valid(self, order=None):
         u"""Проверка возможности доставки"""
 
-        if self._settings.DEFAULT_FEE:
+        if float(Decimal(str(self._settings.DEFAULT_FEE))):
             # если есть такса по умолчанию - значит не надо ничего перепроверять
             return True
 
@@ -204,12 +204,8 @@ class Shipper(BaseShipper):
         return None
 
     def cost(self):
-        cost = Decimal('0.0')
-        if self._charges is not None:
-            cost = Decimal(self._charges)
-        elif self._settings.DEFAULT_FEE:
-            cost = Decimal(str(self._settings.DEFAULT_FEE))
-
+        assert(self._calculated)
+        cost = Decimal(self._charges)
         if cost and self._settings.HANDLING_FEE:
             cost = cost + Decimal(str(self._settings.HANDLING_FEE))
         return cost
@@ -242,5 +238,9 @@ class Shipper(BaseShipper):
                 # не удалось рассчитать
                 log.error('EMS Response: (%s) %s' % (response['rsp']['err']['code'],
                     response['rsp']['err']['msg']))
+                if float(Decimal(str(self._settings.DEFAULT_FEE))):
+                    # воспользуемся тарифом по умолчанию
+                    self._charges = str(self._settings.DEFAULT_FEE)
+                    self._calculated = True
         else:
             log.info('Couldn\'t find EMS location for contact %s' % (contact.id,))
