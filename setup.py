@@ -12,8 +12,8 @@ def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 setup(
-    name = "satchmoemsrus",
-    version = '0.1',
+    name = "satchmo_emsrus",
+    version = '0.8',
     packages = find_packages(),
     include_package_data = True,
     author = 'Valery Sukhomlinov',
