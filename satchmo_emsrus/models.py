@@ -229,22 +229,26 @@ class Shipper(BaseShipper):
             if weight < Decimal(str(self._settings.MIN_WEIGHT)):
                 weight = Decimal(str(self._settings.MIN_WEIGHT))
 
-            request_url = 'http://emspost.ru/api/rest/' \
-                    '?method=ems.calculate&type=alt&from=%s&to=%s&weight=%0.2f' % (
-                        self._city_from, location.key, weight)
-            log.info('EMS request: %s' % (request_url,))
-            response = json.load(urlopen(request_url))
-            if response['rsp']['stat'] == 'ok':
-                self._delivery_days = response['rsp']['term']['max']
-                self._charges = response['rsp']['price']
-                self._calculated = True
-            else:
-                # не удалось рассчитать
-                log.error('EMS Response: (%s) %s' % (response['rsp']['err']['code'],
-                    response['rsp']['err']['msg']))
-                if float(Decimal(str(self._settings.DEFAULT_FEE))):
-                    # воспользуемся тарифом по умолчанию
-                    self._charges = str(self._settings.DEFAULT_FEE)
+            try:
+                request_url = 'http://emspost.ru/api/rest/' \
+                        '?method=ems.calculate&type=alt&from=%s&to=%s&weight=%0.2f' % (
+                            self._city_from, location.key, weight)
+                log.info('EMS request: %s' % (request_url,))
+                response = json.load(urlopen(request_url))
+                if response['rsp']['stat'] == 'ok':
+                    self._delivery_days = response['rsp']['term']['max']
+                    self._charges = response['rsp']['price']
                     self._calculated = True
+                else:
+                    # не удалось рассчитать
+                    log.error('EMS Response: (%s) %s' % (response['rsp']['err']['code'],
+                        response['rsp']['err']['msg']))
+            except:
+                pass
         else:
             log.info('Couldn\'t find EMS location for contact %s' % (contact.id,))
+        if (self._charges is None) and float(Decimal(str(self._settings.DEFAULT_FEE))):
+            # воспользуемся тарифом по умолчанию
+            self._charges = str(self._settings.DEFAULT_FEE)
+            self._calculated = True
+
