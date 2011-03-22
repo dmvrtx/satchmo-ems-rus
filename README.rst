@@ -19,7 +19,7 @@ Satchmo EMS Russia
         SATCHMO_SETTINGS = {
                 ...
             'CUSTOM_SHIPPING_MODULES' :[
-                'satchmoemsrus',
+                'satchmo_emsrus',
                 ]
         }
 
