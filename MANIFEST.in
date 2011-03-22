@@ -1,2 +1,2 @@
-recursive-include satchmoemsrus/templates *.html
-recursive-include satchmoemsrus/locale *.po *.mo
+recursive-include satchmo_emsrus/templates *.html
+recursive-include satchmo_emsrus/locale *.po *.mo
