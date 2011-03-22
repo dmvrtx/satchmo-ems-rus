@@ -19,7 +19,7 @@ setup(
     author = 'Valery Sukhomlinov',
     author_email = 'goodguy@good-guy.me',
     license = 'GPL',
-    long_description=read('readme.txt'),
+    long_description=read('README.rst'),
     classifiers = [
         'Development Status :: 2 - Pre-Alpha',
         'Topic :: Internet :: WWW/HTTP',
