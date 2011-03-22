@@ -225,6 +225,10 @@ class Shipper(BaseShipper):
                 if p_weight is not None:
                     weight += p_weight * cartitem.quantity
 
+            # если вес меньше чем минимальный - используем минимальный
+            if weight < Decimal(str(self._settings.MIN_WEIGHT)):
+                weight = Decimal(str(self._settings.MIN_WEIGHT))
+
             request_url = 'http://emspost.ru/api/rest/' \
                     '?method=ems.calculate&type=alt&from=%s&to=%s&weight=%0.2f' % (
                         self._city_from, location.key, weight)

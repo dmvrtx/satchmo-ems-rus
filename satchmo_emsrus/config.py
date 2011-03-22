@@ -27,6 +27,12 @@ config_register_list(
         default=Decimal('0.00')),
 
     DecimalValue(SHIPPING_GROUP,
+        'MIN_WEIGHT',
+        description=_("Minimal weight"),
+        help_text=_("Used if total order weight below this value (kg)"),
+        default=Decimal('0.50')),
+
+    DecimalValue(SHIPPING_GROUP,
         'DEFAULT_FEE',
         description=_("Default Fee"),
         help_text=_("Used then fee calculation failed if set"),
