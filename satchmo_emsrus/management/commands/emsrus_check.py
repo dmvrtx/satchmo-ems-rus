@@ -2,7 +2,7 @@
 u"""Проверка поиска региона EMS по списку контактов"""
 
 from django.core.management.base import BaseCommand, CommandError
-from satchmoemsrus.models import Location
+from satchmo_emsrus.models import Location
 from satchmo_store.contact.models import Contact
 
 class Command(BaseCommand):

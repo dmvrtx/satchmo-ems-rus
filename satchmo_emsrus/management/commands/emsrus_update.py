@@ -2,7 +2,7 @@
 u"""Команда загрузки списка стран/городов/регионов"""
 
 from django.core.management.base import BaseCommand, CommandError
-from satchmoemsrus.models import Location
+from satchmo_emsrus.models import Location
 from urllib2 import urlopen
 import json
 
