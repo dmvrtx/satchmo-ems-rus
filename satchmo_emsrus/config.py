@@ -6,9 +6,9 @@ from django.utils.translation import ugettext_lazy as _
 from livesettings import *
 
 SHIP_MODULES = config_get('SHIPPING', 'MODULES')
-SHIP_MODULES.add_choice(('satchmoemsrus', 'EMS Russia'))
+SHIP_MODULES.add_choice(('satchmo_emsrus', 'EMS Russia'))
 
-SHIPPING_GROUP = ConfigurationGroup('satchmoemsrus',
+SHIPPING_GROUP = ConfigurationGroup('satchmo_emsrus',
     _('EMS Russia Shipping Settings'),
     requires = SHIP_MODULES,
     ordering = 101)

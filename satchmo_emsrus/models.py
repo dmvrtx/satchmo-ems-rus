@@ -104,7 +104,7 @@ class Shipper(BaseShipper):
 
         self._city_from = ''
         # поиск города из конфигурации
-        self._settings = config_get_group('satchmoemsrus')
+        self._settings = config_get_group('satchmo_emsrus')
         if self._settings.CITY_FROM:
             for location in self.locations:
                 if (location.kind == 'T') and (location.name == self._settings.CITY_FROM):
