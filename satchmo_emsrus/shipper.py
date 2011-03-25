@@ -160,12 +160,15 @@ class Shipper(BaseShipper):
 
             try:
                 request_url = 'http://emspost.ru/api/rest/' \
-                        '?method=ems.calculate&type=alt&from=%s&to=%s&weight=%0.2f' % (
-                            self._city_from, location.key, weight)
-                log.info('EMS request: %s' % (request_url,))
+                        '?method=ems.calculate&type=att&to=%s&weight=%0.2f' % (
+                            location.key, weight)
+                if location.kind != 'C':
+                    request_url = '%s&from=%s' % (request_url, self._city_from)
+                log.info('EMS API request: %s' % (request_url,))
                 response = json.load(urlopen(request_url))
                 if response['rsp']['stat'] == 'ok':
-                    self._delivery_days = response['rsp']['term']['max']
+                    if ('term' in response['rsp']) and ('max' in response['rsp']['term']):
+                        self._delivery_days = response['rsp']['term']['max']
                     self._charges = response['rsp']['price']
                     self._calculated = True
                 else:

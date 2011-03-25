@@ -50,15 +50,17 @@ class Location(models.Model):
         u"""Проверка данных адреса (класс AddressBook) на
             соответствие местоположению"""
         if (self.kind == 'C') \
-                and ((address.country.iso2_code == self.key) \
+                and ((address.country.iso2_code.lower() == self.key.lower()) \
                 or is_similiar(address.country.name, self.name)):
             return True
-        if (self.kind == 'R') \
-                and is_similiar(address.state, self.name):
-            return True
-        if (self.kind == 'T') \
-                and is_similiar(address.city, self.name):
-            return True
+        if address.country.iso2_code.lower() == 'ru':
+            # регионы следует искать только для россии
+            if (self.kind == 'R') \
+                    and is_similiar(address.state, self.name):
+                return True
+            if (self.kind == 'T') \
+                    and is_similiar(address.city, self.name):
+                return True
         return False
 
     def check_order(self, order):
@@ -66,14 +68,16 @@ class Location(models.Model):
         if order.ship_street1:
             # вроде бы есть адрес в заказе
             if (self.kind == 'C') \
-                    or is_similiar(order.ship_country, self.name):
+                    and (order.ship_country.lower() == self.key):
                 return True
-            if (self.kind == 'R') \
-                    and is_similiar(order.ship_state, self.name):
-                return True
-            if (self.kind == 'T') \
-                    and is_similiar(order.ship_city, self.name):
-                return True
+            if (order.ship_country.lower() == 'ru'):
+                # регионы ищем только внутри России
+                if (self.kind == 'R') \
+                        and is_similiar(order.ship_state, self.name):
+                    return True
+                if (self.kind == 'T') \
+                        and is_similiar(order.ship_city, self.name):
+                    return True
         elif (order.contact is not None):
             # иначе вернём результат проверки по контакту
             return self.check_address(order.contact.shipping_address)
