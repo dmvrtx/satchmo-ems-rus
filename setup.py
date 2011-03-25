@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 # vi: set encoding=utf-8:
 #
-"""Скрипт установки пакета."""
+u"""Скрипт установки пакета."""
 
-__version__ = "$Rev: 566 $"[6:-2]
+__version__ = '0.8.1'
 
 import os
 from setuptools import setup, find_packages
@@ -13,7 +13,7 @@ def read(fname):
 
 setup(
     name = "satchmo_emsrus",
-    version = '0.8',
+    version = __version__,
     packages = find_packages(),
     include_package_data = True,
     author = 'Valery Sukhomlinov',
@@ -21,7 +21,7 @@ setup(
     license = 'GPL',
     long_description=read('README.rst'),
     classifiers = [
-        'Development Status :: 2 - Pre-Alpha',
+        'Development Status :: 4 - Beta',
         'Topic :: Internet :: WWW/HTTP',
         'Programming Language :: Python :: 2.6',
         'Framework :: Django',
