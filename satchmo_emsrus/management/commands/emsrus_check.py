@@ -14,8 +14,8 @@ class Command(BaseCommand):
         for contact in Contact.objects.all():
             address = contact.shipping_address
             if address:
-                print 'ADDRESS: %r' % (address,)
-                print u'%s (%s)\t%s\t%s\t%s' % (
+                self.stdout.write('ADDRESS: %r\n' % (address,))
+                self.stdout.write(u'%s (%s)\t%s\t%s\t%s\n' % (
                         address.country, address.country.iso2_code,
                         address.state, address.city,
                         self.find_location(address))

@@ -27,5 +27,6 @@ class Command(BaseCommand):
             for loc in response['rsp']['locations']:
                 row = AdminArea(country=country, name=self.clean_name(loc['name']))
                 row.save()
-            print '%d region(s) retrieved' % (len(response['rsp']['locations']),)
+            self.stdout.write('%d region(s) retrieved\n' % (
+                len(response['rsp']['locations']),))
 
