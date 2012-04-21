@@ -6,7 +6,7 @@ u"""
 from decimal import Decimal
 from django.utils.translation import ugettext as _
 from livesettings import config_get_group, config_value
-from satchmo_emsrus.models import Location
+from satchmo_emsrus.models import Location, is_similiar
 from shipping.modules.base import BaseShipper
 from urllib2 import urlopen
 
@@ -36,7 +36,7 @@ class Shipper(BaseShipper):
         self._settings = config_get_group('satchmo_emsrus')
         if self._settings.CITY_FROM:
             for location in self.locations:
-                if (location.kind == 'T') and (location.name == self._settings.CITY_FROM):
+                if (location.kind == 'T') and is_similiar(unicode(location.name), unicode(self._settings.CITY_FROM)):
                     self._city_from = location.key
 
         if self.cart and self.contact:
